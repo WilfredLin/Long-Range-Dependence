@@ -1,0 +1,45 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def generate_long_range_dependence(n, hurst_exponent):
+    """
+    Generate a long-range dependent time series using the fractional Brownian motion method.
+    
+    Parameters:
+    n (int): Length of the time series.
+    hurst_exponent (float): Hurst exponent (0 < H < 1).
+    
+    Returns:
+    np.ndarray: Long-range dependent time series.
+    """
+    # Generate increments of fractional Brownian motion
+    increments = np.random.normal(size=n)
+    time_index = np.arange(n)
+
+    # Create covariance matrix based on Hurst exponent
+    covariance_matrix = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            covariance_matrix[i, j] = 0.5 * ((i + 1) ** (2 * hurst_exponent) + (j + 1) ** (2 * hurst_exponent) - abs(i - j) ** (2 * hurst_exponent))
+
+    # Generate the long-range dependent time series
+    time_series = np.random.multivariate_normal(mean=np.zeros(n), cov=covariance_matrix)
+    
+    return time_series
+
+# Example usage
+if __name__ == "__main__":
+    n = 1000  # Length of the time series
+    hurst_exponent = 0.7  # Hurst exponent
+
+    # Generate long-range dependent time series
+    time_series = generate_long_range_dependence(n, hurst_exponent)
+
+    # Plot the time series
+    plt.figure(figsize=(10, 6))
+    plt.plot(time_series)
+    plt.title(f'Long-Range Dependent Time Series (Hurst Exponent = {hurst_exponent})')
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.grid()
+    plt.show()
