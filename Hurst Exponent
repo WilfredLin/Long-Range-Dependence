@@ -1,0 +1,31 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Function to calculate the Hurst exponent
+
+def hurst_exponent(ts):
+    lags = range(2, 100)  # Range of lag values
+    tau = []  # Array to store the tau values
+    for lag in lags:
+        # Calculate the variances of the lagged differences
+        tau.append(np.std(np.subtract(ts[lag:], ts[:-lag])) / np.std(ts))
+    # Fit a line to the log-log plot
+    log_lags = np.log(lags)
+    log_tau = np.log(tau)
+    hurst_exponent = np.polyfit(log_lags, log_tau, 1)[0]  # Slope of the line
+    return hurst_exponent
+
+# Example usage
+if __name__ == '__main__':
+    # Generate a random time series
+    np.random.seed(0)
+    ts = np.random.randn(1000).cumsum()  # Random walk
+    hurst = hurst_exponent(ts)
+    print(f'Hurst Exponent: {hurst}')  # Print the Hurst exponent
+
+    # Plotting the time series
+    plt.plot(ts)
+    plt.title('Random Walk Time Series')
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.show()
