@@ -1,0 +1,31 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Function to calculate the Hölder exponent
+
+def holder_exponent(ts, p=1):
+    n = len(ts)
+    increments = np.abs(np.subtract.outer(ts, ts))
+    increments = increments[increments > 0]  # Remove zero increments
+    increments = np.sort(increments)
+    k = np.arange(1, len(increments) + 1)
+    log_k = np.log(k)
+    log_increment = np.log(increments)
+    # Fit a line to the log-log plot
+    coeffs = np.polyfit(log_k, log_increment, 1)
+    return coeffs[0]  # Slope of the line
+
+# Example usage
+if __name__ == '__main__':
+    # Generate a random time series
+    np.random.seed(0)
+    ts = np.random.randn(1000).cumsum()  # Random walk
+    holder = holder_exponent(ts)
+    print(f'Hölder Exponent: {holder}')  # Print the Hölder exponent
+
+    # Plotting the time series
+    plt.plot(ts)
+    plt.title('Random Walk Time Series')
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.show()
